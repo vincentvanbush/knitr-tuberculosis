@@ -46,12 +46,16 @@ sums_by_year = function(dataset, country_choice = NA) {
 }
 
 plot_tb_data = function(dataset, country = NA) {
+  y_max = (sums_by_year(dataset) %>%
+             mutate(year, all = (child + adult + elderly)) %>%
+             slice(which.max(all)))$all
   title = if (is.na(country)) "Zachorowania na gruźlicę w grupach wiekowych" else country
   grouped_data = sums_by_year(dataset, country)
   print(length(grouped_data$year))
   matplot(x = grouped_data$year, y = grouped_data %>% select(-year),
           type = c("b"), pch = 1,
-          main = title, ylab = "Liczba zachorowań", xlab = "Rok badania")
+          main = title, ylab = "Liczba zachorowań", xlab = "Rok badania",
+          ylim = c(0, y_max))
   legend("topleft", legend=c("Dzieci", "Dorośli", "Starsi"), col = 1:3, pch = 1)
 }
 
